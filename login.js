@@ -60,7 +60,7 @@ export default function Login(props) {
       }),
       headers: { 'content-type': 'application/json' },
     })
-      .then((response) => {response.text})
+      .then((response) => response.text()) 
       .then((authkey) => validate_token(authkey))
 
       .catch((error) => {
@@ -68,23 +68,21 @@ export default function Login(props) {
       })
   }
 
-  function validate_token() {
-    const validateToken = (authkey) => {
+  function validate_token(authkey) {
       fetch('https://dev.stedi.me/validate/' + authkey, {method: 'GET'})
       .then((response) => {const statusCode = response.status
                            const email = response.text()
-                           return Promise.all([statusCode, response])})
+                           return Promise.all([statusCode, email])})
       .then(([statusCode, email]) => {
         if(statusCode != 200) {
           Alert.alert("Invalid Login")
         }
         else {
+          props.setUserEmail(email)
           props.setUserLoggedIn(true)
-          props.email(email)
         }
       })
     }
-  }
 
   return (
     <View>
